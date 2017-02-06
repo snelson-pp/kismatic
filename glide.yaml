@@ -15,3 +15,4 @@ import:
   subpackages:
   - ssh
 - package: github.com/pkg/browser
+- package: github.com/gosuri/uilive
