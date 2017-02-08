@@ -16,7 +16,7 @@ var _ = Describe("control plane high availability feature", func() {
 	Describe("running kuberang against an HA cluster", func() {
 		Context("when one of the master nodes is unavailable", func() {
 			ItOnAWS("should result in a successful smoke test [slow]", func(aws infrastructureProvisioner) {
-				WithInfrastructureAndDNS(NodeCount{1, 2, 1, 0, 0}, CentOS7, aws, func(nodes provisionedNodes, sshKey string) {
+				WithInfrastructureAndDNS(NodeCount{1, 2, 1, 0, 0}, Ubuntu1604LTS, aws, func(nodes provisionedNodes, sshKey string) {
 					opts := installOptions{allowPackageInstallation: true}
 					err := installKismatic(nodes, opts, sshKey)
 					Expect(err).ToNot(HaveOccurred())

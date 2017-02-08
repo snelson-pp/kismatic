@@ -14,7 +14,7 @@ var _ = Describe("kismatic install add-worker tests", func() {
 
 	Describe("adding a worker to an existing cluster", func() {
 		ItOnAWS("should result in a cluster with an additional worker [slow]", func(aws infrastructureProvisioner) {
-			WithInfrastructure(NodeCount{Worker: 2}, CentOS7, aws, func(nodes provisionedNodes, sshKey string) {
+			WithInfrastructure(NodeCount{Worker: 2}, Ubuntu1604LTS, aws, func(nodes provisionedNodes, sshKey string) {
 				theNode := nodes.worker[0]
 				err := installKismaticMini(theNode, sshKey)
 				Expect(err).ToNot(HaveOccurred())

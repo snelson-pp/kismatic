@@ -15,7 +15,7 @@ var _ = Describe("ingress feature", func() {
 	Describe("accessing the ingress point of a cluster", func() {
 		Context("when the cluster has an ingress node", func() {
 			ItOnAWS("should return a successful response", func(aws infrastructureProvisioner) {
-				WithMiniInfrastructure(CentOS7, aws, func(node NodeDeets, sshKey string) {
+				WithMiniInfrastructure(Ubuntu1604LTS, aws, func(node NodeDeets, sshKey string) {
 					By("Installing a cluster with ingress")
 					err := installKismaticMini(node, sshKey)
 					Expect(err).ToNot(HaveOccurred())

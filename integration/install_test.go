@@ -81,7 +81,7 @@ var _ = Describe("kismatic", func() {
 				allowPackageInstallation: true,
 			}
 			ItOnAWS("should install successfully [slow]", func(aws infrastructureProvisioner) {
-				WithInfrastructure(NodeCount{1, 1, 1, 1, 1}, CentOS7, aws, func(nodes provisionedNodes, sshKey string) {
+				WithInfrastructure(NodeCount{1, 1, 1, 1, 1}, Ubuntu1604LTS, aws, func(nodes provisionedNodes, sshKey string) {
 					err := installKismatic(nodes, installOpts, sshKey)
 					Expect(err).ToNot(HaveOccurred())
 				})
@@ -90,7 +90,7 @@ var _ = Describe("kismatic", func() {
 
 		Context("when deploying a mini-kube style cluster", func() {
 			ItOnAWS("should install successfully", func(aws infrastructureProvisioner) {
-				WithMiniInfrastructure(CentOS7, aws, func(node NodeDeets, sshKey string) {
+				WithMiniInfrastructure(Ubuntu1604LTS, aws, func(node NodeDeets, sshKey string) {
 					err := installKismaticMini(node, sshKey)
 					Expect(err).ToNot(HaveOccurred())
 				})
@@ -106,9 +106,9 @@ var _ = Describe("kismatic", func() {
 			})
 		})
 
-		Context("when targetting Ubuntu", func() {
+		Context("when targetting CentOS 7", func() {
 			ItOnAWS("should install successfully", func(aws infrastructureProvisioner) {
-				WithMiniInfrastructure(Ubuntu1604LTS, aws, func(node NodeDeets, sshKey string) {
+				WithMiniInfrastructure(CentOS7, aws, func(node NodeDeets, sshKey string) {
 					err := installKismaticMini(node, sshKey)
 					Expect(err).ToNot(HaveOccurred())
 				})
@@ -117,7 +117,7 @@ var _ = Describe("kismatic", func() {
 
 		Context("when deploying a skunkworks cluster", func() {
 			ItOnAWS("should install successfully [slow]", func(aws infrastructureProvisioner) {
-				WithInfrastructure(NodeCount{3, 2, 3, 2, 2}, CentOS7, aws, func(nodes provisionedNodes, sshKey string) {
+				WithInfrastructure(NodeCount{3, 2, 3, 2, 2}, Ubuntu1604LTS, aws, func(nodes provisionedNodes, sshKey string) {
 					installOpts := installOptions{allowPackageInstallation: true}
 					err := installKismatic(nodes, installOpts, sshKey)
 					Expect(err).ToNot(HaveOccurred())
@@ -126,7 +126,7 @@ var _ = Describe("kismatic", func() {
 		})
 
 		ItOnPacket("should install successfully [slow]", func(packet infrastructureProvisioner) {
-			WithMiniInfrastructure(CentOS7, packet, func(node NodeDeets, sshKey string) {
+			WithMiniInfrastructure(Ubuntu1604LTS, packet, func(node NodeDeets, sshKey string) {
 				err := installKismaticMini(node, sshKey)
 				Expect(err).ToNot(HaveOccurred())
 			})

@@ -17,7 +17,7 @@ var _ = Describe("disconnected install feature", func() {
 	Describe("Installing on machines with no internet access", func() {
 		Context("with kismatic packages installed", func() {
 			ItOnAWS("should install successfully", func(aws infrastructureProvisioner) {
-				WithMiniInfrastructure(CentOS7, aws, func(node NodeDeets, sshKey string) {
+				WithMiniInfrastructure(Ubuntu1604LTS, aws, func(node NodeDeets, sshKey string) {
 					By("Installing the RPMs on the node")
 					theNode := []NodeDeets{node}
 					nodes := provisionedNodes{
@@ -26,7 +26,7 @@ var _ = Describe("disconnected install feature", func() {
 						worker:  theNode,
 						ingress: theNode,
 					}
-					InstallKismaticPackages(nodes, CentOS7, sshKey, true)
+					InstallKismaticPackages(nodes, Ubuntu1604LTS, sshKey, true)
 
 					By("Verifying connectivity to google.com")
 					err := runViaSSH([]string{"curl --head www.google.com"}, theNode, sshKey, 1*time.Minute)
