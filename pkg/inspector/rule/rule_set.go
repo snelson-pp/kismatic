@@ -66,6 +66,14 @@ const defaultRuleSet = `---
 - kind: TCPPortAvailable
   when: ["master"]
   port: 8080
+# kube-scheduler
+- kind: TCPPortAvailable
+  when: ["master"]
+  port: 10251
+# kube-controller-manager
+- kind: TCPPortAvailable
+  when: ["master"]
+  port: 10252
 
 # Ports used by K8s master are accessible
 # Port 8080 is not accessible from outside
@@ -73,6 +81,50 @@ const defaultRuleSet = `---
   when: ["master"]
   port: 6443
   timeout: 5s
+# kube-scheduler
+- kind: TCPPortAccessible
+  when: ["master"]
+  port: 10251
+# kube-controller-manager
+- kind: TCPPortAccessible
+  when: ["master"]
+  port: 10252
+
+# Ports used by K8s worker are available
+# cAdvisor
+- kind: TCPPortAvailable
+  when: ["master","worker","ingress","storage"]
+  port: 4194
+# kubelet localhost healthz
+- kind: TCPPortAvailable
+  when: ["master","worker","ingress","storage"]
+  port: 10248
+# kube-proxy
+- kind: TCPPortAvailable
+  when: ["master","worker","ingress","storage"]
+  port: 10249
+# kubelet
+- kind: TCPPortAvailable
+  when: ["master","worker","ingress","storage"]
+  port: 10250
+# kubelet no auth
+- kind: TCPPortAvailable
+  when: ["master","worker","ingress","storage"]
+  port: 10255
+
+# Ports used by K8s worker are accessible
+# cAdvisor
+- kind: TCPPortAccessible
+  when: ["master","worker","ingress","storage"]
+  port: 4194
+# kube-proxy
+- kind: TCPPortAccessible
+  when: ["master","worker","ingress","storage"]
+  port: 10249
+# kubelet
+- kind: TCPPortAccessible
+  when: ["master","worker","ingress","storage"]
+  port: 10250
 
 # Port used by Docker registry
 - kind: TCPPortAvailable
@@ -97,6 +149,14 @@ const defaultRuleSet = `---
 - kind: TCPPortAccessible
   when: ["ingress"]
   port: 443
+  timeout: 5s
+# healthz
+- kind: TCPPortAvailable
+  when: ["ingress"]
+  port: 10254
+- kind: TCPPortAccessible
+  when: ["ingress"]
+  port: 10254
   timeout: 5s
 
 - kind: PackageAvailable
