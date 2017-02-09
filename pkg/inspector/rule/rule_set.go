@@ -85,10 +85,12 @@ const defaultRuleSet = `---
 - kind: TCPPortAccessible
   when: ["master"]
   port: 10251
+  timeout: 5s
 # kube-controller-manager
 - kind: TCPPortAccessible
   when: ["master"]
   port: 10252
+  timeout: 5s
 
 # Ports used by K8s worker are available
 # cAdvisor
@@ -117,14 +119,17 @@ const defaultRuleSet = `---
 - kind: TCPPortAccessible
   when: ["master","worker","ingress","storage"]
   port: 4194
+  timeout: 5s
 # kube-proxy
 - kind: TCPPortAccessible
   when: ["master","worker","ingress","storage"]
   port: 10249
+  timeout: 5s
 # kubelet
 - kind: TCPPortAccessible
   when: ["master","worker","ingress","storage"]
   port: 10250
+  timeout: 5s
 
 # Port used by Docker registry
 - kind: TCPPortAvailable
