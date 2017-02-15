@@ -179,10 +179,10 @@ deb_repository_url: https://kismatic-packages-deb.s3-accelerate.amazonaws.com
 deb_gpg_key_url: https://kismatic-packages-deb.s3-accelerate.amazonaws.com/public.key
 
 # Uncomment below to use test repo
-# yum_repository_url: https://kismatic-packages-rpm-test.s3-accelerate.amazonaws.com
-# yum_gpg_key_url: https://kismatic-packages-rpm-test.s3-accelerate.amazonaws.com/public.key
-# deb_repository_url: https://kismatic-packages-deb-test.s3-accelerate.amazonaws.com
-# deb_gpg_key_url: https://kismatic-packages-deb-test.s3-accelerate.amazonaws.com/public.key
+# yum_repository_url: http://rpm.k6c.us
+# yum_gpg_key_url: http://rpm.k6c.us/public.key
+# deb_repository_url: http://deb.k6c.us
+# deb_gpg_key_url: http://deb.k6c.us/public.key
 # Uncomment below to use local repo
 # yum_repository_url: http://192.168.200.80/
 # yum_gpg_key_url: http://192.168.200.80/public.key
