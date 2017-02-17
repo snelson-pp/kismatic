@@ -40,7 +40,7 @@ func ValidateNode(node *Node) (bool, []error) {
 func ValidatePlanSSHConnections(p *Plan) (bool, []error) {
 	v := newValidator()
 
-	s := sshConnectionSet{p.Cluster.SSH, p.GetUniqueNodeIPs()}
+	s := sshConnectionSet{p.Cluster.SSH, p.GetUniqueNodes()}
 
 	v.validateWithErrPrefix("Node Connnection", s)
 
@@ -49,17 +49,14 @@ func ValidatePlanSSHConnections(p *Plan) (bool, []error) {
 
 type sshConnectionSet struct {
 	SSHConfig SSHConfig
-	IPs       []string
+	Nodes     []Node
 }
 
 // ValidateSSHConnection tries to establish SSH connection with the details provieded for a single node
 func ValidateSSHConnection(con *SSHConnection, prefix string) (bool, []error) {
 	v := newValidator()
-
-	s := sshConnectionSet{*con.SSHConfig, []string{con.Node.IP}}
-
+	s := sshConnectionSet{*con.SSHConfig, []Node{*con.Node}}
 	v.validateWithErrPrefix(prefix, s)
-
 	return v.valid()
 }
 
@@ -219,10 +216,10 @@ func (s sshConnectionSet) validate() (bool, []error) {
 		v.addError(fmt.Errorf("error parsing SSH key: %v", err))
 	} else {
 		var wg sync.WaitGroup
-		errQueue := make(chan error, len(s.IPs))
+		errQueue := make(chan error, len(s.Nodes))
 		// number of nodes
-		wg.Add(len(s.IPs))
-		for _, ipa := range s.IPs {
+		wg.Add(len(s.Nodes))
+		for _, node := range s.Nodes {
 			go func(ip string) {
 				defer wg.Done()
 				sshErr := ssh.TestConnection(ip, s.SSHConfig.Port, s.SSHConfig.User, s.SSHConfig.Key)
@@ -232,7 +229,7 @@ func (s sshConnectionSet) validate() (bool, []error) {
 				} else {
 					errQueue <- nil
 				}
-			}(ipa)
+			}(node.IP)
 		}
 
 		// Wait for all nodes to complete, then close channel
@@ -378,11 +375,26 @@ func (nfs *NFS) validate() (bool, []error) {
 	v := newValidator()
 	uniqueVolumes := make(map[NFSVolume]bool)
 	for _, vol := range nfs.Volumes {
+		v.validate(vol)
 		if _, ok := uniqueVolumes[vol]; ok {
 			v.addError(fmt.Errorf("Duplicate NFS volume %v", vol))
 		} else {
 			uniqueVolumes[vol] = true
 		}
+	}
+	return v.valid()
+}
+
+func (nfsVol NFSVolume) validate() (bool, []error) {
+	v := newValidator()
+	if nfsVol.Host == "" {
+		v.addError(errors.New("NFS volume host cannot be empty"))
+	}
+	if nfsVol.Path == "" {
+		v.addError(errors.New("NFS volume path cannot be empty"))
+	}
+	if len(nfsVol.Path) > 0 && nfsVol.Path[0] != '/' {
+		v.addError(errors.New("NFS volume path must be absolute"))
 	}
 	return v.valid()
 }
