@@ -18,9 +18,9 @@ func (p PackageQuery) String() string {
 // The PackageCheck uses the operating system to determine whether a
 // package is installed or is available for installation.
 type PackageCheck struct {
-	PackageQuery        PackageQuery
-	PackageManager      PackageManager
-	InstallationAllowed bool
+	PackageQuery         PackageQuery
+	PackageManager       PackageManager
+	InstallationDisabled bool
 }
 
 // Check returns true if the package is installed. If installation is allowed,
@@ -35,7 +35,7 @@ func (c PackageCheck) Check() (bool, error) {
 		return true, nil
 	}
 	// If installation is not allowed, and the package is not installed, fail.
-	if !installed && !c.InstallationAllowed {
+	if c.InstallationDisabled && !installed {
 		return false, errors.New("Package is not installed, and package installation is disabled")
 	}
 	available, err := c.PackageManager.IsAvailable(c.PackageQuery)

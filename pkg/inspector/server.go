@@ -30,7 +30,7 @@ var closeEndpoint = "/close"
 
 // NewServer returns an inspector server that has been initialized
 // with the default rules engine
-func NewServer(nodeFacts []string, port int, enforcePackages bool) (*Server, error) {
+func NewServer(nodeFacts []string, port int, packageInstallationDisabled bool) (*Server, error) {
 	s := &Server{
 		Port: port,
 	}
@@ -45,8 +45,8 @@ func NewServer(nodeFacts []string, port int, enforcePackages bool) (*Server, err
 	}
 	engine := &rule.Engine{
 		RuleCheckMapper: rule.DefaultCheckMapper{
-			PackageManager:       pkgMgr,
-			PackageCheckEnforced: enforcePackages,
+			PackageManager:              pkgMgr,
+			PackageInstallationDisabled: packageInstallationDisabled,
 		},
 	}
 	s.rulesEngine = engine

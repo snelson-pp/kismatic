@@ -17,64 +17,63 @@ func (m stubPkgManager) IsAvailable(q PackageQuery) (bool, error) {
 
 func TestPackageCheck(t *testing.T) {
 	tests := []struct {
-		installEnabled bool
-		isInstalled    bool
-		isAvailable    bool
-		expected       bool
-		errExpected    bool
+		installationDisabled bool
+		isInstalled          bool
+		isAvailable          bool
+		expected             bool
+		errExpected          bool
 	}{
 		{
-			installEnabled: true,
-			isInstalled:    true,
-			isAvailable:    true,
-			expected:       true,
+			installationDisabled: true,
+			isInstalled:          true,
+			isAvailable:          true,
+			expected:             true,
 		},
 		{
-			installEnabled: true,
-			isInstalled:    false,
-			isAvailable:    true,
-			expected:       true,
+			installationDisabled: true,
+			isInstalled:          false,
+			isAvailable:          true,
+			expected:             false,
+			errExpected:          true,
 		},
 		{
-			installEnabled: true,
-			isInstalled:    false,
-			isAvailable:    false,
-			expected:       false,
+			installationDisabled: true,
+			isInstalled:          false,
+			isAvailable:          false,
+			expected:             false,
+			errExpected:          true,
 		},
 		{
-			installEnabled: false,
-			isInstalled:    true,
-			isAvailable:    true,
-			expected:       true,
+			installationDisabled: false,
+			isInstalled:          true,
+			isAvailable:          true,
+			expected:             true,
 		},
 		{
-			installEnabled: false,
-			isInstalled:    false,
-			isAvailable:    true,
-			expected:       false,
-			errExpected:    true,
+			installationDisabled: false,
+			isInstalled:          false,
+			isAvailable:          true,
+			expected:             true,
 		},
 		{
-			installEnabled: false,
-			isInstalled:    true,
-			isAvailable:    false,
-			expected:       true,
+			installationDisabled: false,
+			isInstalled:          true,
+			isAvailable:          false,
+			expected:             true,
 		},
-
 		{
-			installEnabled: false,
-			isInstalled:    false,
-			isAvailable:    false,
-			expected:       false,
-			errExpected:    true,
+			installationDisabled: false,
+			isInstalled:          false,
+			isAvailable:          false,
+			expected:             false,
 		},
 	}
 
 	for i, test := range tests {
 		c := PackageCheck{
-			PackageQuery:        PackageQuery{"somePkg", "someVersion"},
-			PackageManager:      stubPkgManager{installed: test.isInstalled, available: test.isAvailable},
-			InstallationAllowed: test.installEnabled,
+			PackageQuery:         PackageQuery{"somePkg", "someVersion"},
+			PackageManager:       stubPkgManager{installed: test.isInstalled, available: test.isAvailable},
+			InstallationDisabled: test.installationDisabled,
 		}
 		ok, err := c.Check()
 		if err != nil && !test.errExpected {

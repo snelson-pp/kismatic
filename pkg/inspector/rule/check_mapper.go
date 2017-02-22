@@ -19,8 +19,8 @@ type DefaultCheckMapper struct {
 	PackageManager check.PackageManager
 	// IP of the remote node that is being inspected when in client mode
 	TargetNodeIP string
-	// PackageCheckEnforced determines whether the package checks are to be enforced
-	PackageCheckEnforced bool
+	// PackageInstallationDisabled determines whether Kismatic is allowed to install packages on the node
+	PackageInstallationDisabled bool
 }
 
 // GetCheckForRule returns the check for the given rule. If the rule
@@ -32,7 +32,7 @@ func (m DefaultCheckMapper) GetCheckForRule(rule Rule) (check.Check, error) {
 		return nil, fmt.Errorf("Rule of type %T is not supported", r)
 	case PackageDependency:
 		pkgQuery := check.PackageQuery{Name: r.PackageName, Version: r.PackageVersion}
-		c = &check.PackageCheck{PackageQuery: pkgQuery, PackageManager: m.PackageManager, InstallationAllowed: m.PackageCheckEnforced}
+		c = &check.PackageCheck{PackageQuery: pkgQuery, PackageManager: m.PackageManager, InstallationDisabled: m.PackageInstallationDisabled}
 	case ExecutableInPath:
 		c = &check.ExecutableInPathCheck{Name: r.Executable}
 	case FileContentMatches:
