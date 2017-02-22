@@ -39,13 +39,14 @@ func NewServer(nodeFacts []string, port int, enforcePackages bool) (*Server, err
 		return nil, fmt.Errorf("error building server: %v", err)
 	}
 	s.NodeFacts = append(nodeFacts, string(distro))
-	pkgMgr, err := check.NewPackageManager(distro, enforcePackages)
+	pkgMgr, err := check.NewPackageManager(distro)
 	if err != nil {
 		return nil, fmt.Errorf("error building server: %v", err)
 	}
 	engine := &rule.Engine{
 		RuleCheckMapper: rule.DefaultCheckMapper{
-			PackageManager: pkgMgr,
+			PackageManager:       pkgMgr,
+			PackageCheckEnforced: enforcePackages,
 		},
 	}
 	s.rulesEngine = engine

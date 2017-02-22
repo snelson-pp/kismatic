@@ -1,7 +1,11 @@
 package check
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
+// PackageQuery is a query for finding a package
 type PackageQuery struct {
 	Name    string
 	Version string
@@ -11,38 +15,32 @@ func (p PackageQuery) String() string {
 	return fmt.Sprintf("%s %s", p.Name, p.Version)
 }
 
-// PackageAvailableCheck verifies that a given package is available for download
-// using the operating system's package manager. If packages are not enforced,
-// this check is a no-op.
-type PackageAvailableCheck struct {
-	PackageQuery   PackageQuery
-	PackageManager PackageManager
+// The PackageCheck uses the operating system to determine whether a
+// package is installed or is available for installation.
+type PackageCheck struct {
+	PackageQuery        PackageQuery
+	PackageManager      PackageManager
+	InstallationAllowed bool
 }
 
-// PackageAvailableCheck verifies that a given package is available for download
-// using the operating system's package manager. This check occurs even if
-// packages are not enforced.
-type PackageAvailableUpgradeCheck struct {
-	PackageQuery   PackageQuery
-	PackageManager PackageManager
-}
-
-// Check returns true if the package is available. Otherwise returns false, or an error
-// if the check is unable to determine the condition.
-func (c PackageAvailableCheck) Check() (bool, error) {
-	ok, err := IsPackageReadyToContinue(c.PackageManager, c.PackageQuery)
+// Check returns true if the package is installed. If installation is allowed,
+// Check will also return true if the package is available for installation, but is not installed.
+// Otherwise, Check returns false.
+func (c PackageCheck) Check() (bool, error) {
+	installed, err := c.PackageManager.IsInstalled(c.PackageQuery)
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("failed to determine if package is installed: %v", err)
 	}
-	return ok, nil
-}
-
-// Check returns true if the package is available. Otherwise returns false, or an error
-// if the check is unable to determine the condition.
-func (c PackageAvailableUpgradeCheck) Check() (bool, error) {
-	ok, err := IsPackageAvailable(c.PackageManager, c.PackageQuery)
+	if installed {
+		return true, nil
+	}
+	// If installation is not allowed, and the package is not installed, fail.
+	if !installed && !c.InstallationAllowed {
+		return false, errors.New("Package is not installed, and package installation is disabled")
+	}
+	available, err := c.PackageManager.IsAvailable(c.PackageQuery)
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("failed to determine if package is available for installation: %v", err)
 	}
-	return ok, nil
+	return available, nil
 }

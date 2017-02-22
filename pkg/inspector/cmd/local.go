@@ -62,7 +62,7 @@ func runLocal(out io.Writer, opts localOpts) error {
 	if err != nil {
 		return fmt.Errorf("error running checks locally: %v", err)
 	}
-	pkgMgr, err := check.NewPackageManager(distro, opts.enforcePackages)
+	pkgMgr, err := check.NewPackageManager(distro)
 	if err != nil {
 		return err
 	}
@@ -70,7 +70,8 @@ func runLocal(out io.Writer, opts localOpts) error {
 	// Create rule engine
 	e := rule.Engine{
 		RuleCheckMapper: rule.DefaultCheckMapper{
-			PackageManager: pkgMgr,
+			PackageManager:       pkgMgr,
+			PackageCheckEnforced: opts.enforcePackages,
 		},
 	}
 	labels := append(roles, string(distro))
