@@ -65,7 +65,7 @@ func TestPackageCheck(t *testing.T) {
 			installationDisabled: false,
 			isInstalled:          false,
 			isAvailable:          false,
-			expected:             false,
+			expected:             true,
 		},
 	}
 
