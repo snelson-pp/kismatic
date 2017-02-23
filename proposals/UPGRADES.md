@@ -5,6 +5,7 @@ is defined as the replacement of _binaries_ or _configuration_ of a cluster crea
 An upgrade does not include the operating system, or any packages that are not managed by Kismatic.
 
 This upgrade implementation is concerned with upgrading the following:
+* Etcd clusters (Kubernetes and Networking)
 * Kubernetes components
 * Docker (if we decide to support a newer version)
 * Calico
@@ -91,6 +92,8 @@ The following checks are performed on each node to determine readiness:
 2. Packages: When package installation is disabled, ensure that the new packages are installed.
 
 ## Order of upgrade
+All etcd nodes
+Then
 All master nodes
 Then
 All worker nodes (regardless of specialization)
