@@ -15,7 +15,7 @@ type PackageDependency struct {
 
 // Name returns the name of the rule
 func (p PackageDependency) Name() string {
-	return fmt.Sprintf("Package Available: %s %s", p.PackageName, p.PackageVersion)
+	return fmt.Sprintf(`Package "%s %s"`, p.PackageName, p.PackageVersion)
 }
 
 // IsRemoteRule returns true if the rule is to be run from outside of the node
