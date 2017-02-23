@@ -14,12 +14,6 @@ type verboseExplainer struct {
 	printPlayStatus  bool
 	lastPlay         string
 	currentTask      string
-	playCount        int
-	currentPlayCount int
-}
-
-func (explainer verboseExplainer) getCount() string {
-	return rightPadToLen(fmt.Sprintf("%d/%d", explainer.currentPlayCount, explainer.playCount), ".", 7)
 }
 
 func (explainer *verboseExplainer) writePlayStatus(buf io.Writer) {
@@ -31,9 +25,8 @@ func (explainer *verboseExplainer) writePlayStatus(buf io.Writer) {
 			fmt.Fprintln(buf)
 			util.PrintColor(buf, util.Green, "%s Finished With No Tasks\n", explainer.lastPlay)
 		} else {
-			util.PrintColor(buf, util.Green, "%s  %s Finished\n", explainer.getCount(), explainer.lastPlay)
+			util.PrintColor(buf, util.Green, "%s Finished\n", explainer.lastPlay)
 		}
-		explainer.currentPlayCount = explainer.currentPlayCount + 1
 	}
 }
 
@@ -45,7 +38,7 @@ func (explainer *verboseExplainer) ExplainEvent(e ansible.Event) {
 		// On a play start the previous play ends
 		// Print a success status, but only when there were no errors
 		explainer.writePlayStatus(out)
-		fmt.Fprintf(out, "%s  %s", explainer.getCount(), event.Name)
+		fmt.Fprintf(out, "%s", event.Name)
 		// Set default state for the play
 		explainer.lastPlay = event.Name
 		explainer.printPlayStatus = true
@@ -141,10 +134,9 @@ func (explainer *verboseExplainer) ExplainEvent(e ansible.Event) {
 			util.PrintColor(out, util.Red, "---------------\n")
 		}
 
+	// Ignored events
 	case *ansible.RunnerItemRetryEvent:
 	case *ansible.PlaybookStartEvent:
-		explainer.playCount = event.Count
-		explainer.currentPlayCount = 1
 	default:
 		util.PrintColor(out, util.Orange, "Unhandled event: %T\n", event)
 	}

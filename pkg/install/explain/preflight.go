@@ -42,7 +42,7 @@ func (exp *updatingPreflightExplainer) ExplainEvent(ansibleEvent ansible.Event) 
 		buf := &bytes.Buffer{}
 		// only print this header this is the first failure
 		if !exp.explainer.failureOccurred {
-			util.PrettyPrintErr(buf, "%s %s", exp.explainer.playCountIndicator(), exp.explainer.currentPlayName)
+			util.PrettyPrintErr(buf, "%s", exp.explainer.currentPlayName)
 			fmt.Fprintln(buf, "- Task: "+exp.explainer.currentTask)
 		}
 		results := []rule.Result{}
